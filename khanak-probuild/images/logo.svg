@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" role="img" aria-label="Khanak ProBuild LLP logo mark — three building silhouettes on deep teal background">
+  <title>Khanak ProBuild LLP</title>
+
+  <!-- Background: brand deep teal -->
+  <rect width="200" height="120" rx="8" fill="#0d3d36"/>
+
+  <!-- Building silhouettes in sage/mint — architectural line style -->
+
+  <!-- Left building (shortest) -->
+  <rect x="28" y="62" width="34" height="42" rx="1" fill="none" stroke="#8fc0b8" stroke-width="2.2"/>
+  <!-- Windows left building -->
+  <rect x="34" y="70" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="48" y="70" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="34" y="84" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="48" y="84" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+
+  <!-- Centre building (tallest) -->
+  <rect x="70" y="30" width="42" height="74" rx="1" fill="none" stroke="#8fc0b8" stroke-width="2.2"/>
+  <!-- Windows centre building -->
+  <rect x="77" y="38" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="92" y="38" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="77" y="54" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="92" y="54" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="77" y="70" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="92" y="70" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="77" y="86" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="92" y="86" width="9"  height="9"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+
+  <!-- Right building (medium) -->
+  <rect x="122" y="46" width="36" height="58" rx="1" fill="none" stroke="#8fc0b8" stroke-width="2.2"/>
+  <!-- Windows right building -->
+  <rect x="128" y="54" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="142" y="54" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="128" y="68" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="142" y="68" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="128" y="82" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+  <rect x="142" y="82" width="8"  height="8"  rx="0.5" fill="none" stroke="#8fc0b8" stroke-width="1.4"/>
+
+  <!-- Ground line -->
+  <line x1="16" y1="104" x2="184" y2="104" stroke="#8fc0b8" stroke-width="2" stroke-linecap="round"/>
+</svg>

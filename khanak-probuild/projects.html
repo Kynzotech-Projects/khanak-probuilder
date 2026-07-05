@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta -->
+  <title>Projects — Construction & Interior Portfolio | Khanak ProBuild LLP, Ahmedabad</title>
+  <meta name="description" content="Explore Khanak ProBuild LLP's project portfolio — residential, commercial, industrial construction and interior design projects across Gujarat and India.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.khanakprobuild.com/projects.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Projects — Khanak ProBuild LLP Portfolio">
+  <meta property="og:description" content="A showcase of the spaces we've built, managed, and designed — construction and interior projects across India.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.khanakprobuild.com/projects.html">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/main-logo.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header injected by main.js -->
+  <div id="header-placeholder"></div>
+
+  <main id="main-content">
+
+    <!-- PAGE HERO -->
+    <section class="page-hero dark-section" aria-labelledby="projects-page-heading">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <span aria-current="page">Projects</span>
+        </nav>
+        <span class="eyebrow">Our Portfolio</span>
+        <h1 id="projects-page-heading">Our Projects</h1>
+        <p>A showcase of the spaces we've built, managed, and designed.</p>
+      </div>
+    </section>
+
+    <!-- PROJECTS GRID + FILTER -->
+    <section class="section" aria-labelledby="projects-grid-heading">
+      <div class="container">
+
+        <h2 id="projects-grid-heading" class="visually-hidden">Project portfolio</h2>
+
+        <!-- Filter bar -->
+        <div class="filter-bar" role="group" aria-label="Filter projects by category">
+          <button class="filter-btn active" data-filter="All">All</button>
+          <button class="filter-btn" data-filter="Construction">Construction</button>
+          <button class="filter-btn" data-filter="Project Management">Project Management</button>
+          <button class="filter-btn" data-filter="Interior">Interior</button>
+        </div>
+
+        <!--
+          Project cards are rendered dynamically from js/projects.js
+          by renderProjectsGrid() in main.js.
+
+          TO ADD A NEW PROJECT:
+          1. Open js/projects.js
+          2. Copy one project object and paste it at the end of the array
+          3. Update all fields — title, category, image, description, location, year
+          4. Drop the photo into images/projects/
+          5. Save projects.js — the card will appear automatically here AND on the home page
+             (set featured: true to also show it in the Home featured section)
+
+          All cards are marked data-placeholder="true" until real project photos are provided.
+        -->
+        <div
+          id="projects-page-grid"
+          class="projects-page-grid"
+          aria-live="polite"
+          aria-label="Project cards"
+        >
+          <!-- Rendered by main.js → renderProjectsGrid() -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="section cta-section" aria-labelledby="projects-cta-heading">
+      <div class="container">
+        <div data-reveal>
+          <span class="eyebrow" style="display:block;text-align:center;margin-bottom:1rem">Let's Work Together</span>
+          <h2 id="projects-cta-heading">Your Project Could Be Next</h2>
+          <p>Tell us what you're building — we'll show you how we can help.</p>
+          <a href="contact.html" class="btn btn--secondary btn--lg" style="margin-top:0">
+            Start a Conversation
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PROJECT DETAIL MODAL -->
+  <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Project details">
+    <div class="modal">
+      <button class="modal__close" aria-label="Close project details">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <img class="modal__image" src="" alt="" style="display:none">
+      <div class="modal__image-placeholder" style="display:none" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="8" y="28" width="12" height="28"/>
+          <rect x="26" y="16" width="12" height="40"/>
+          <rect x="44" y="22" width="12" height="34"/>
+          <line x1="4" y1="56" x2="60" y2="56"/>
+        </svg>
+      </div>
+      <div class="modal__body">
+        <span class="modal__category"></span>
+        <h2 class="modal__title"></h2>
+        <p class="modal__desc"></p>
+        <div class="modal__meta">
+          <div class="modal__meta-item">
+            <span class="modal__meta-label">Location</span>
+            <span class="modal__meta-value" data-modal-location></span>
+          </div>
+          <div class="modal__meta-item">
+            <span class="modal__meta-label">Year</span>
+            <span class="modal__meta-value" data-modal-year></span>
+          </div>
+          <div class="modal__meta-item">
+            <span class="modal__meta-label">Category</span>
+            <span class="modal__meta-value" data-modal-category></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer injected by main.js -->
+  <div id="footer-placeholder"></div>
+
+  <script src="js/projects.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
