@@ -3710,3 +3710,276 @@ p {
   .handover-steps::before { left: 23px; }
   .handover-step__num { width: 48px; height: 48px; min-width: 48px; font-size: 0.8125rem; }
 }
+
+/* ============================================================
+   PILLAR — LIGHT BACKGROUND MODIFIER
+   Used in sections with bg-tint (grey) background
+   ============================================================ */
+.pillar--light {
+  background: #fff;
+  border: 1px solid var(--color-border);
+}
+
+.pillar--light:hover {
+  background: #fff;
+  border-color: var(--color-sage);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.pillar--light h4 {
+  color: var(--color-text); /* black */
+}
+
+.pillar--light p {
+  color: var(--color-text-muted); /* dark grey */
+}
+
+.pillar--light .pillar__icon {
+  background: var(--color-bg-tint);
+  color: var(--color-teal);
+}
+
+.pillar--light:hover .pillar__icon {
+  background: var(--color-teal);
+  color: var(--color-sage-light);
+}
+
+/* ============================================================
+   CONTACT HERO — split layout (text left, form right)
+   ============================================================ */
+.contact-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--color-teal);
+}
+
+/* Full-bleed background image */
+.contact-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.contact-hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Gradient overlay — heavier on the right so form panel is readable */
+.contact-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(13,61,54,0.72) 0%,
+    rgba(13,61,54,0.60) 45%,
+    rgba(13,61,54,0.88) 100%
+  );
+}
+
+/* Inner two-column grid */
+.contact-hero__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  padding-block: calc(var(--nav-height) + 3rem) 4rem;
+  width: 100%;
+}
+
+/* LEFT column — heading, tagline, contact details */
+.contact-hero__left h1 {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.contact-hero__left .breadcrumb a,
+.contact-hero__left .breadcrumb span {
+  color: rgba(250,250,250,0.6);
+}
+
+.contact-hero__left .breadcrumb-sep {
+  color: rgba(250,250,250,0.35);
+}
+
+/* Quick contact info list */
+.contact-hero__info {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-hero__info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  color: rgba(250,250,250,0.82);
+  font-size: 0.9375rem;
+}
+
+.contact-hero__info-item svg {
+  flex-shrink: 0;
+  color: var(--color-sage-light);
+}
+
+.contact-hero__info-item a {
+  color: rgba(250,250,250,0.82);
+  transition: color var(--transition-fast);
+}
+
+.contact-hero__info-item a:hover {
+  color: var(--color-sage-light);
+}
+
+/* RIGHT column — white form card */
+.contact-hero__form-panel {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 3vw, 2.75rem);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.28);
+}
+
+.contact-hero__form-panel h2 {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  color: var(--color-text);
+  margin-bottom: 0.375rem;
+}
+
+.contact-hero__form-panel > p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.75rem;
+}
+
+/* Form inputs inside the panel */
+.contact-hero__form-panel .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.contact-hero__form-panel .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.contact-hero__form-panel .form-label {
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+}
+
+.contact-hero__form-panel .form-label span {
+  color: #e05555;
+}
+
+.contact-hero__form-panel .form-input,
+.contact-hero__form-panel .form-select,
+.contact-hero__form-panel .form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.contact-hero__form-panel .form-input:focus,
+.contact-hero__form-panel .form-select:focus,
+.contact-hero__form-panel .form-textarea:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px rgba(13,61,54,0.1);
+  outline: none;
+}
+
+.contact-hero__form-panel .form-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Success message */
+.contact-hero__form-panel .form-success {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  margin-top: 1.25rem;
+}
+
+.contact-hero__form-panel .form-success.visible {
+  display: flex;
+}
+
+/* Map strip below hero */
+.contact-map-full {
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  display: block;
+}
+
+.contact-map-full iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .contact-hero__inner {
+    grid-template-columns: 1fr;
+    padding-block: calc(var(--nav-height) + 2rem) 3rem;
+  }
+
+  .contact-hero {
+    min-height: auto;
+  }
+
+  .contact-hero__left h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+
+  .contact-hero__info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+  }
+
+  .contact-map-full { height: 300px; }
+}
+
+@media (max-width: 560px) {
+  .contact-hero__form-panel .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-hero__info {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-map-full { height: 240px; }
+}
