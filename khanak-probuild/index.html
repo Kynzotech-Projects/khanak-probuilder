@@ -37,22 +37,50 @@
   <main id="main-content">
 
     <!-- =====================================================
-         SECTION 1: HERO
+         SECTION 1: HERO — SLIDESHOW
          ===================================================== -->
-    <section class="hero" aria-label="Hero — Khanak ProBuild LLP">
+    <section class="hero hero--slideshow" aria-label="Hero — Khanak ProBuild LLP">
 
-      <!-- Background image with teal overlay -->
-      <div class="hero-bg" aria-hidden="true">
-        <!--
-          PLACEHOLDER IMAGE: Replace src below with a high-resolution construction/
-          architecture photo (modern building facade or golden-hour site photo).
-          Recommended: 1920×1080px minimum, optimised WebP.
-        -->
-        <img
-          src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=80&auto=format&fit=crop"
-          alt="Modern construction site at golden hour — Khanak ProBuild LLP project"
-          fetchpriority="high"
-        >
+      <!-- Slideshow backgrounds -->
+      <div class="hero-slides" aria-hidden="true">
+        <div class="hero-slide active">
+          <img
+            src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=80&auto=format&fit=crop"
+            alt="Construction site — Khanak ProBuild LLP"
+            fetchpriority="high"
+          >
+        </div>
+        <div class="hero-slide">
+          <img
+            src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=80&auto=format&fit=crop"
+            alt="Commercial building — Khanak ProBuild LLP"
+            loading="lazy"
+          >
+        </div>
+        <div class="hero-slide">
+          <img
+            src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80&auto=format&fit=crop"
+            alt="Interior design — Khanak ProBuild LLP"
+            loading="lazy"
+          >
+        </div>
+        <div class="hero-slide">
+          <img
+            src="https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?w=1920&q=80&auto=format&fit=crop"
+            alt="Project management — Khanak ProBuild LLP"
+            loading="lazy"
+          >
+        </div>
+        <!-- Overlay -->
+        <div class="hero-slides-overlay"></div>
+      </div>
+
+      <!-- Slide dots -->
+      <div class="hero-slide-dots" aria-label="Slideshow navigation">
+        <button class="slide-dot active" data-slide="0" aria-label="Slide 1"></button>
+        <button class="slide-dot" data-slide="1" aria-label="Slide 2"></button>
+        <button class="slide-dot" data-slide="2" aria-label="Slide 3"></button>
+        <button class="slide-dot" data-slide="3" aria-label="Slide 4"></button>
       </div>
 
       <!-- Watermark logo motif (decorative) -->
@@ -72,19 +100,15 @@
             Ahmedabad, Gujarat · Est. 2025
           </div>
 
-          <h1 data-reveal data-delay="100">
+          <p class="hero-tagline" data-reveal data-delay="80">
+            Business Consulting &amp; Project Management for Construction and Interior Projects across India.
+          </p>
+
+          <h1 data-reveal data-delay="180">
             We Design.<br>We Build.<br><em>We Deliver.</em>
           </h1>
 
-          <p class="hero-subtitle" data-reveal data-delay="200">
-            Business consulting &amp; project management for construction and interior projects across India.
-          </p>
-
-          <p class="hero-body" data-reveal data-delay="300">
-            From the first sketch to the final handover, Khanak ProBuild manages every stage of your project — strategy, cost, timeline, and craftsmanship — so your vision becomes a structure you can walk into.
-          </p>
-
-          <div class="hero-actions" data-reveal data-delay="400">
+          <div class="hero-actions" data-reveal data-delay="300">
             <a href="contact.html" class="btn btn--primary btn--lg">
               Book a Free Consultation
             </a>
@@ -148,61 +172,53 @@
     </section>
 
     <!-- =====================================================
-         SECTION 3: OVERVIEW / INTRO
+         SECTION 3: ABOUT — VISION & MISSION
          ===================================================== -->
     <section class="section bg-tint" id="about-intro" aria-labelledby="intro-heading">
       <div class="container">
-        <div class="intro-grid">
 
-          <!-- Visual -->
-          <div class="intro-visual" data-reveal="from-left">
-            <!--
-              PLACEHOLDER IMAGE: Replace with a professional photo of the team,
-              a completed project site, or an architectural concept.
-              Recommended: 800×1000px, portrait orientation.
-            -->
-            <img
-              src="https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?w=800&q=80&auto=format&fit=crop"
-              alt="Khanak ProBuild LLP team reviewing architectural plans on a construction site, Ahmedabad"
-              loading="lazy"
-              onerror="this.parentElement.style.background='linear-gradient(135deg,#0d3d36,#1a5f55)'"
-            >
-            <div class="intro-visual-badge">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-                <polyline points="20 6 9 17 4 12"/>
+        <div class="section-header centered" data-reveal>
+          <span class="eyebrow">About Us</span>
+          <h2 id="intro-heading" class="section-heading">Who We Are</h2>
+          <div class="divider divider--center"></div>
+        </div>
+
+        <div class="vm-grid">
+
+          <div class="vm-card" data-reveal data-delay="100">
+            <div class="vm-card__icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
               </svg>
-              Built on Trust &amp; Transparency
             </div>
+            <h3>Our Vision</h3>
+            <p>To be a trusted name in the construction industry by delivering innovative, sustainable, and high-quality infrastructure solutions that create lasting value for our clients and communities.</p>
           </div>
 
-          <!-- Content -->
-          <div class="intro-content" data-reveal="from-right">
-            <span class="eyebrow">About Us</span>
-            <h2 id="intro-heading">From Vision<br>to Reality</h2>
-            <div class="divider" style="margin-bottom:1.75rem"></div>
-
-            <p>
-              At Khanak ProBuild, we provide business consulting and project management services for the construction and interior design industry. We guide clients through every stage of a project — from initial planning and consultation to construction execution and interior design implementation.
-            </p>
-            <p style="margin-top:1.25rem">
-              We focus on strategic planning, cost-effective solutions, and innovative design, ensuring every project meets the highest standards of quality, functionality, and aesthetic excellence.
-            </p>
-            <p style="margin-top:1.25rem">
-              Our mission is to turn ideas into spaces that inspire — while building long-term relationships based on trust, transparency, and professionalism.
-            </p>
-
-            <div style="margin-top:2rem">
-              <a href="contact.html" class="btn btn--secondary">
-                Partner With Us
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </a>
+          <div class="vm-card" data-reveal data-delay="200">
+            <div class="vm-card__icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
             </div>
+            <h3>Our Mission</h3>
+            <p>To deliver every project with uncompromising quality, safety, and precision while fostering long-term relationships built on trust, transparency, and reliability. Through innovative engineering, efficient project management, and a commitment to timely execution, we strive to exceed client expectations at every stage.</p>
           </div>
 
         </div>
+
+        <div style="text-align:center;margin-top:2.5rem" data-reveal>
+          <a href="about.html" class="btn btn--secondary">
+            Learn More About Us
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+        </div>
+
       </div>
     </section>
 
@@ -223,41 +239,8 @@
 
         <div class="services-grid">
 
-          <!-- Card 1: Project Management -->
+          <!-- Card 1: Construction Projects -->
           <article class="service-card" data-reveal data-delay="100">
-            <div class="service-card__photo">
-              <img
-                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=700&q=80&auto=format&fit=crop"
-                alt="Project manager reviewing plans — Khanak ProBuild LLP project management service"
-                loading="lazy"
-                data-placeholder="true"
-              >
-            </div>
-            <div class="service-card__icon" aria-hidden="true">
-              <!-- Icon: checklist/clipboard — project management -->
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-                <rect x="9" y="3" width="6" height="4" rx="1"/>
-                <line x1="9" y1="12" x2="15" y2="12"/>
-                <line x1="9" y1="16" x2="13" y2="16"/>
-                <polyline points="7 12 8 13 10 11"/>
-              </svg>
-            </div>
-            <h3 class="service-card__title">Project Management</h3>
-            <p class="service-card__desc">
-              We step in at any stage of your project to improve execution, control cost, and protect long-term value.
-            </p>
-            <a href="project-management.html" class="link-arrow service-card__link">
-              Learn More
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/>
-                <polyline points="12 5 19 12 12 19"/>
-              </svg>
-            </a>
-          </article>
-
-          <!-- Card 2: Construction -->
-          <article class="service-card" data-reveal data-delay="200">
             <div class="service-card__photo">
               <img
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&q=80&auto=format&fit=crop"
@@ -267,7 +250,6 @@
               >
             </div>
             <div class="service-card__icon" aria-hidden="true">
-              <!-- Icon: building/construction -->
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                 <rect x="3"  y="10" width="5" height="11"/>
                 <rect x="10" y="4"  width="5" height="17"/>
@@ -275,9 +257,9 @@
                 <line x1="1" y1="21" x2="23" y2="21"/>
               </svg>
             </div>
-            <h3 class="service-card__title">Construction</h3>
+            <h3 class="service-card__title">Construction Projects</h3>
             <p class="service-card__desc">
-              Industrial, commercial, and residential construction built for strength, performance, and lasting value.
+              Industrial, commercial, and residential construction — Engineering, Procurement &amp; Construction (EPC) built for strength, performance, and lasting value.
             </p>
             <a href="construction.html" class="link-arrow service-card__link">
               Learn More
@@ -288,8 +270,8 @@
             </a>
           </article>
 
-          <!-- Card 3: Interior -->
-          <article class="service-card" data-reveal data-delay="300">
+          <!-- Card 2: Interior Projects -->
+          <article class="service-card" data-reveal data-delay="200">
             <div class="service-card__photo">
               <img
                 src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&q=80&auto=format&fit=crop"
@@ -299,7 +281,6 @@
               >
             </div>
             <div class="service-card__icon" aria-hidden="true">
-              <!-- Icon: interior/sofa/lamp -->
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                 <path d="M2 17h20v2H2z"/>
                 <path d="M4 17V9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8"/>
@@ -308,11 +289,43 @@
                 <line x1="16" y1="19" x2="16" y2="22"/>
               </svg>
             </div>
-            <h3 class="service-card__title">Interior</h3>
+            <h3 class="service-card__title">Interior Projects</h3>
             <p class="service-card__desc">
-              Spaces designed to blend comfort, style, and function — tailored to how you live and work.
+              Spaces designed to blend comfort, style, and function — transforming residential, commercial, and corporate environments with creativity and precision.
             </p>
             <a href="interior.html" class="link-arrow service-card__link">
+              Learn More
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </article>
+
+          <!-- Card 3: PMC -->
+          <article class="service-card" data-reveal data-delay="300">
+            <div class="service-card__photo">
+              <img
+                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=700&q=80&auto=format&fit=crop"
+                alt="Project management consultancy — Khanak ProBuild LLP PMC service"
+                loading="lazy"
+                data-placeholder="true"
+              >
+            </div>
+            <div class="service-card__icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <line x1="9" y1="12" x2="15" y2="12"/>
+                <line x1="9" y1="16" x2="13" y2="16"/>
+                <polyline points="7 12 8 13 10 11"/>
+              </svg>
+            </div>
+            <h3 class="service-card__title">Project Management Consultancy</h3>
+            <p class="service-card__desc">
+              Strategic project oversight at every stage — planning, scheduling, budget control, vendor management, and quality assurance for projects of every scale.
+            </p>
+            <a href="project-management.html" class="link-arrow service-card__link">
               Learn More
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"/>

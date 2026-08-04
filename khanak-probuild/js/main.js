@@ -710,6 +710,79 @@ function initGallery() {
   });
 }
 
+/* ============================================================
+   16. HERO SLIDESHOW
+   ============================================================ */
+function initHeroSlideshow() {
+  const slides   = $$('.hero-slide');
+  const dots     = $$('.slide-dot');
+  if (!slides.length) return;
+
+  let current   = 0;
+  let timer     = null;
+  const INTERVAL = 5000; // ms between slides
+
+  function goTo(index) {
+    // Mark current as leaving
+    slides[current].classList.remove('active');
+    slides[current].classList.add('leaving');
+    dots[current] && dots[current].classList.remove('active');
+
+    // After transition completes, remove leaving class
+    const prev = slides[current];
+    setTimeout(() => prev.classList.remove('leaving'), 1300);
+
+    current = (index + slides.length) % slides.length;
+
+    slides[current].classList.add('active');
+    dots[current] && dots[current].classList.add('active');
+  }
+
+  function next() { goTo(current + 1); }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(next, INTERVAL);
+  }
+
+  // Dot click navigation
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      goTo(parseInt(dot.dataset.slide, 10));
+      startTimer(); // reset timer on manual nav
+    });
+  });
+
+  // Pause on hover (desktop)
+  const hero = $('.hero--slideshow');
+  if (hero) {
+    hero.addEventListener('mouseenter', () => clearInterval(timer));
+    hero.addEventListener('mouseleave', startTimer);
+  }
+
+  // Touch swipe support
+  let touchStartX = 0;
+  if (hero) {
+    hero.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    hero.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        goTo(dx < 0 ? current + 1 : current - 1);
+        startTimer();
+      }
+    }, { passive: true });
+  }
+
+  // Pause when tab is hidden (saves CPU)
+  document.addEventListener('visibilitychange', () => {
+    document.hidden ? clearInterval(timer) : startTimer();
+  });
+
+  startTimer();
+}
+
 function initSmoothScroll() {
   $$('a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
@@ -744,6 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFaqAccordion();
     initGallery();
     initSmoothScroll();
+    initHeroSlideshow();
 
     // Render project grids if containers exist on this page
     renderFeaturedProjects();

@@ -2969,3 +2969,570 @@ p {
   .gallery-item img { transition: none; }
   .gallery-item__caption { transition: none; }
 }
+
+/* ============================================================
+   22. HERO SLIDESHOW
+   ============================================================ */
+
+/* The slideshow container fills the entire hero background */
+.hero--slideshow {
+  position: relative;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--color-teal);
+}
+
+.hero-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Each slide occupies full hero area, hidden by default */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  /* Horizontal Ken-Burns: slides in from the right, drifts left */
+  transform: translateX(6%);
+  transition:
+    opacity 1.2s ease,
+    transform 6s ease;
+  will-change: opacity, transform;
+}
+
+/* Active slide is fully visible and drifted to resting position */
+.hero-slide.active {
+  opacity: 1;
+  transform: translateX(0%);
+}
+
+/* Slide leaving: fade out and drift further left */
+.hero-slide.leaving {
+  opacity: 0;
+  transform: translateX(-4%);
+  transition:
+    opacity 1.2s ease,
+    transform 1.2s ease;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+/* Dark gradient overlay so text is always readable */
+.hero-slides-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(13,61,54,0.55) 0%,
+    rgba(13,61,54,0.45) 35%,
+    rgba(13,61,54,0.82) 100%
+  );
+  z-index: 1;
+}
+
+/* Hero content sits above slides */
+.hero--slideshow .hero-content {
+  position: relative;
+  z-index: 2;
+  padding-block: clamp(5rem, 8vw, 7rem) clamp(3rem, 4vw, 4rem);
+  max-width: 820px;
+}
+
+/* Tagline — the main business description above the h1 */
+.hero-tagline {
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-weight: 500;
+  color: rgba(250,250,250,0.88);
+  letter-spacing: 0.01em;
+  line-height: 1.55;
+  max-width: 62ch;
+  margin-bottom: 1.25rem;
+}
+
+/* Slide dot navigation */
+.hero-slide-dots {
+  position: absolute;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+}
+
+.slide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(250,250,250,0.35);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition-base), width var(--transition-base);
+}
+
+.slide-dot.active {
+  background: var(--color-sage-light);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Keep watermark and scroll-cue above slides */
+.hero--slideshow .hero-watermark,
+.hero--slideshow .hero-scroll-cue {
+  z-index: 2;
+}
+
+/* ============================================================
+   23. VISION & MISSION GRID (Home + About)
+   ============================================================ */
+.vm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.vm-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 3vw, 2.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.vm-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.vm-card__icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-md);
+  color: var(--color-teal);
+  flex-shrink: 0;
+}
+
+.vm-card h3 {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  color: var(--color-teal);
+}
+
+.vm-card p {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   24. LEADERSHIP CARD (About)
+   ============================================================ */
+.leadership-card {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: clamp(2.5rem, 4vw, 4rem);
+  align-items: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.leadership-card__photo {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+}
+
+.leadership-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.8s ease;
+}
+
+.leadership-card:hover .leadership-card__photo img {
+  transform: scale(1.04);
+}
+
+.leadership-card__body {
+  padding: clamp(2rem, 3vw, 3rem) clamp(2rem, 3vw, 3rem) clamp(2rem, 3vw, 3rem) 0;
+}
+
+.leadership-card__body h3 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  margin-bottom: 0;
+  color: var(--color-text);
+}
+
+/* ============================================================
+   25. INDUSTRIES GRID (Construction)
+   ============================================================ */
+.industries-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-md);
+}
+
+.industry-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 2vw, 2rem) 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.industry-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.industry-card__icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.industry-card h4 {
+  font-size: 1rem;
+  color: var(--color-teal);
+  margin-bottom: 0;
+}
+
+.industry-card p {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   26. ENGINEERING SERVICES GRID (Construction)
+   ============================================================ */
+.engineering-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-sm);
+}
+
+.eng-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1.5rem 1rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+}
+
+.eng-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  background: var(--color-teal);
+  color: #fff;
+  border-color: var(--color-teal);
+}
+
+.eng-item__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-md);
+  color: var(--color-teal);
+  flex-shrink: 0;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.eng-item:hover .eng-item__icon {
+  background: rgba(255,255,255,0.15);
+  color: var(--color-sage-light);
+}
+
+.eng-item span {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  transition: color var(--transition-base);
+}
+
+.eng-item:hover span { color: #fff; }
+
+/* ============================================================
+   27. CONSTRUCTION PLANNING GRID
+   ============================================================ */
+.planning-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.planning-item {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.planning-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.planning-item__num {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-sage);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.planning-item h4 {
+  font-size: 1.0625rem;
+  margin-bottom: 0.375rem;
+  color: var(--color-teal);
+}
+
+.planning-item p {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   28. INTERIOR TYPES GRID
+   ============================================================ */
+.interior-types-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.interior-type-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.interior-type-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.interior-type-card__icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.interior-type-card h4 {
+  font-size: 1.0625rem;
+  color: var(--color-teal);
+}
+
+.interior-type-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   29. PMC SERVICES GRID (Project Management)
+   ============================================================ */
+.pmc-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.pmc-service-item {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.pmc-service-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-teal), var(--color-sage));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.pmc-service-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.pmc-service-item:hover::before { transform: scaleX(1); }
+
+.pmc-service-item__icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-md);
+  color: var(--color-teal);
+  flex-shrink: 0;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.pmc-service-item:hover .pmc-service-item__icon {
+  background: var(--color-teal);
+  color: var(--color-sage-light);
+}
+
+.pmc-service-item h4 {
+  font-size: 1.0625rem;
+  color: var(--color-text);
+  margin-bottom: 0;
+}
+
+.pmc-service-item p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   30. MAP EMBED (Contact)
+   ============================================================ */
+.map-embed {
+  margin-top: 1.5rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.map-embed iframe {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border: 0;
+}
+
+/* ============================================================
+   31. RESPONSIVE OVERRIDES — NEW COMPONENTS
+   ============================================================ */
+
+/* Slideshow */
+@media (max-width: 768px) {
+  .hero-slide-dots { bottom: 4rem; }
+  .hero-tagline { font-size: 0.9375rem; }
+}
+
+/* VM Grid */
+@media (max-width: 700px) {
+  .vm-grid { grid-template-columns: 1fr; }
+}
+
+/* Leadership card */
+@media (max-width: 860px) {
+  .leadership-card {
+    grid-template-columns: 1fr;
+  }
+  .leadership-card__photo {
+    aspect-ratio: 4/3;
+    max-height: 320px;
+  }
+  .leadership-card__body {
+    padding: 1.75rem;
+  }
+}
+
+/* Industries */
+@media (max-width: 1024px) {
+  .industries-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+  .industries-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Engineering grid */
+@media (max-width: 1024px) {
+  .engineering-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 640px) {
+  .engineering-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 440px) {
+  .engineering-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Planning grid */
+@media (max-width: 900px) {
+  .planning-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .planning-grid { grid-template-columns: 1fr; }
+}
+
+/* Interior types */
+@media (max-width: 900px) {
+  .interior-types-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .interior-types-grid { grid-template-columns: 1fr; }
+}
+
+/* PMC services */
+@media (max-width: 960px) {
+  .pmc-services-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .pmc-services-grid { grid-template-columns: 1fr; }
+}
