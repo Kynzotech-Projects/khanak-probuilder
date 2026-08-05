@@ -50,8 +50,8 @@ const HEADER_HTML = `
  </a>
  <div class="nav-dropdown" role="menu">
  <a href="construction.html" class="nav-dropdown-link" role="menuitem">Construction</a>
- <a href="project-management.html" class="nav-dropdown-link" role="menuitem">Project Management</a>
  <a href="interior.html" class="nav-dropdown-link" role="menuitem">Interior Design</a>
+ <a href="project-management.html" class="nav-dropdown-link" role="menuitem">Project Management</a>
  </div>
  </div>
 
@@ -80,8 +80,8 @@ const HEADER_HTML = `
  <a href="services.html" class="nav-link" data-page="services.html">Services</a>
  <div class="nav-mobile-sub">
  <a href="construction.html" class="nav-dropdown-link">Construction</a>
- <a href="project-management.html" class="nav-dropdown-link">Project Management</a>
  <a href="interior.html" class="nav-dropdown-link">Interior Design</a>
+ <a href="project-management.html" class="nav-dropdown-link">Project Management</a>
  </div>
 
  <a href="projects.html" class="nav-link" data-page="projects.html">Projects</a>
@@ -788,6 +788,57 @@ function initHeroSlideshow() {
  startTimer();
 }
 
+
+function initProjectsHeroSlideshow() {
+ const slides = $$('.projects-hero__slide');
+ const dots   = $$('.phero-dot');
+ if (!slides.length) return;
+
+ let current  = 0;
+ let timer    = null;
+ const INTERVAL = 2000;
+
+ function goTo(index) {
+   slides[current].classList.remove('active');
+   slides[current].classList.add('leaving');
+   dots[current] && dots[current].classList.remove('active');
+   const prev = slides[current];
+   setTimeout(() => prev.classList.remove('leaving'), 1300);
+   current = (index + slides.length) % slides.length;
+   slides[current].classList.add('active');
+   dots[current] && dots[current].classList.add('active');
+ }
+
+ function startTimer() {
+   clearInterval(timer);
+   timer = setInterval(() => goTo(current + 1), INTERVAL);
+ }
+
+ dots.forEach(dot => {
+   dot.addEventListener('click', () => {
+     goTo(parseInt(dot.dataset.slide, 10));
+     startTimer();
+   });
+ });
+
+ const hero = $('.projects-hero');
+ if (hero) {
+   hero.addEventListener('mouseenter', () => clearInterval(timer));
+   hero.addEventListener('mouseleave', startTimer);
+   hero.addEventListener('touchstart', e => { hero._tx = e.changedTouches[0].screenX; }, { passive: true });
+   hero.addEventListener('touchend', e => {
+     const dx = e.changedTouches[0].screenX - (hero._tx || 0);
+     if (Math.abs(dx) > 50) { goTo(dx < 0 ? current + 1 : current - 1); startTimer(); }
+   }, { passive: true });
+ }
+
+ document.addEventListener('visibilitychange', () => {
+   document.hidden ? clearInterval(timer) : startTimer();
+ });
+
+ startTimer();
+}
+
 function initSmoothScroll() {
  $$('a[href^="#"]').forEach(link => {
  link.addEventListener('click', e => {
@@ -823,6 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
  initGallery();
  initSmoothScroll();
  initHeroSlideshow();
+ initProjectsHeroSlideshow();
 
  // Render project grids if containers exist on this page
  renderFeaturedProjects();
