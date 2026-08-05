@@ -2753,6 +2753,26 @@ p {
   line-height: 1.6;
 }
 
+/* 5-step variant (Construction page) */
+.process-steps--5col {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.process-steps--5col::before {
+  left: calc(9% + 1.25rem);
+  right: calc(9% + 1.25rem);
+}
+
+/* 6-step variant (Interior page) */
+.process-steps--6col {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.process-steps--6col::before {
+  left: calc(8% + 1rem);
+  right: calc(8% + 1rem);
+}
+
 /* --- FAQ Accordion --- */
 .faq-list {
   margin-top: clamp(2rem, 3vw, 3rem);
@@ -2989,6 +3009,8 @@ p {
   .service-intro-grid { grid-template-columns: 1fr; }
   .service-collage { position: static; }
   .process-steps { grid-template-columns: repeat(3, 1fr); }
+  .process-steps--5col { grid-template-columns: repeat(3, 1fr); }
+  .process-steps--6col { grid-template-columns: repeat(3, 1fr); }
   .process-steps::before { display: none; }
   .services-photo-grid { grid-template-columns: 1fr; }
   .interior-styles-grid { grid-template-columns: 1fr 1fr; }
@@ -2997,6 +3019,8 @@ p {
 @media (max-width: 600px) {
   .checklist-grid { grid-template-columns: 1fr; }
   .process-steps { grid-template-columns: 1fr 1fr; }
+  .process-steps--5col { grid-template-columns: 1fr 1fr; }
+  .process-steps--6col { grid-template-columns: 1fr 1fr; }
   .interior-styles-grid { grid-template-columns: 1fr; }
   .service-collage { grid-template-columns: 1fr; }
   .service-collage__sm:last-child { display: none; }
