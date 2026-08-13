@@ -221,7 +221,7 @@ function injectFooter() {
  ============================================================ */
 function injectWhatsApp() {
  // Replace with the actual WhatsApp number (country code + number, no + or spaces)
- const WHATSAPP_NUMBER = '9198256 52912';
+ const WHATSAPP_NUMBER = '919825652912';
  const WHATSAPP_MESSAGE = encodeURIComponent('Hello! I am interested in your construction/interior services.');
 
  const btn = document.createElement('a');
