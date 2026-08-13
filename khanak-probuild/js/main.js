@@ -750,7 +750,7 @@ function initHeroSlideshow() {
 
  let current = 0;
  let timer = null;
- const INTERVAL = 2000; // ms between slides
+ const INTERVAL = 4000; // ms between slides
 
  function goTo(index) {
  // Mark current as leaving
