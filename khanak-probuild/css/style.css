@@ -2177,75 +2177,132 @@ p {
   line-height: 1.65;
   margin: 0;
 }
-
 /* ============================================================
-   PROJECT HANDOVER STEPS (construction.html)
+   PROJECT HANDOVER — HORIZONTAL
    ============================================================ */
 .handover-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: var(--space-lg);
-  position: relative;
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  column-gap: 50px !important;
+
+  /* Extend the handover row across the page */
+  width: calc(100vw - 80px) !important;
+  max-width: none !important;
+  margin: 55px 0 0 50% !important;
+  transform: translateX(-50%) !important;
+
+  padding: 0 30px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
 }
 
+
+/* Horizontal connecting line */
 .handover-steps::before {
-  content: '';
-  position: absolute;
-  left: 27px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--color-border);
-  z-index: 0;
+  content: "" !important;
+  position: absolute !important;
+  top: 28px !important;
+  left: 58px !important;
+  right: 58px !important;
+  height: 2px !important;
+  background: var(--color-border) !important;
+  z-index: 0 !important;
 }
 
+
+/* Each step */
 .handover-step {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-md);
-  padding: var(--space-md) 0;
-  position: relative;
-  z-index: 1;
+  width: 100% !important;
+  min-width: 0 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+
+  position: relative !important;
+  z-index: 1 !important;
 }
 
+
+/* Number circle */
 .handover-step__num {
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  border-radius: 50%;
-  background: var(--color-teal);
-  color: #fff;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
-  flex-shrink: 0;
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+
+  flex-shrink: 0 !important;
+
+  margin-bottom: 20px !important;
+
+  border-radius: 50% !important;
+  background: var(--color-teal) !important;
+  color: #fff !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  position: relative !important;
+  z-index: 2 !important;
 }
 
+
+/* Text area */
 .handover-step__body {
-  padding-top: 0.75rem;
+  width: 100% !important;
+  max-width: 240px !important;
+  padding: 0 5px !important;
+  box-sizing: border-box !important;
 }
 
+
+/* Heading */
 .handover-step__body h4 {
-  font-size: 1.0625rem;
-  font-family: var(--font-heading);
-  margin-bottom: 0.375rem;
-  color: var(--color-text);
+  text-align: center !important;
+  margin-bottom: 10px !important;
 }
 
+
+/* Description */
 .handover-step__body p {
-  font-size: 0.9375rem;
-  color: var(--color-text-muted);
-  line-height: 1.65;
-  max-width: 640px;
+  width: 100% !important;
+  max-width: 240px !important;
+  margin: 0 auto !important;
+  padding: 0 4px !important;
+
+  line-height: 1.6 !important;
+  text-align: center !important;
 }
 
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .handover-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    row-gap: 40px !important;
+  }
+
+  .handover-steps::before {
+    display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .handover-steps {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .handover-step__num {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    font-size: 0.8125rem !important;
+  }
+} 
 /* ============================================================
    20. ANIMATIONS & SCROLL REVEAL
    ============================================================ */
@@ -2763,14 +2820,23 @@ p {
   right: calc(9% + 1.25rem);
 }
 
-/* 6-step variant (Interior page) */
+/* 6-step variant (Interior page) - 4 Top, 2 Bottom Centered */
 .process-steps--6col {
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
+/* Center the 5th and 6th cards on the second row */
+.process-steps--6col .process-step:nth-child(5) {
+  grid-column: 2 / 3;
+}
+.process-steps--6col .process-step:nth-child(6) {
+  grid-column: 3 / 4;
+}
+
+/* Adjust the connecting line to only span the top 4 items */
 .process-steps--6col::before {
-  left: calc(8% + 1rem);
-  right: calc(8% + 1rem);
+  left: calc(12% + 1rem);
+  right: calc(12% + 1rem);
 }
 
 /* --- FAQ Accordion --- */
@@ -3500,12 +3566,131 @@ p {
 /* ============================================================
    26. ENGINEERING SERVICES GRID (Construction)
    ============================================================ */
+
+/* Legacy compact layout — kept for backwards compat */
 .engineering-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: var(--space-sm);
 }
 
+/* ── Image-card layout ────────────────────────────────────── */
+.engineering-grid--cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.engineering-grid--cards .eng-row {
+  display: grid;
+  gap: var(--space-md);
+}
+
+/* Top row: 4 equal columns */
+.engineering-grid--cards .eng-row--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Bottom row: 3 cards, centred */
+.engineering-grid--cards .eng-row--3 {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 75%;      /* 3/4 of the container width */
+  margin-inline: auto; /* horizontally centres the row */
+}
+
+.eng-card {
+  position: relative;
+  min-height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-teal);       /* fallback if image missing */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  cursor: default;
+}
+
+.eng-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Dark gradient overlay for legibility */
+.eng-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 40, 35, 0.90) 0%,
+    rgba(10, 40, 35, 0.55) 55%,
+    rgba(10, 40, 35, 0.20) 100%
+  );
+  transition: background var(--transition-base);
+  z-index: 0;
+}
+
+.eng-card:hover .eng-card__overlay {
+  background: linear-gradient(
+    to top,
+    rgba(10, 40, 35, 0.95) 0%,
+    rgba(10, 40, 35, 0.65) 55%,
+    rgba(10, 40, 35, 0.30) 100%
+  );
+}
+
+/* eng-card--no-img kept for backwards compatibility if needed */
+
+.eng-card__content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eng-card__icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(143, 192, 184, 0.45);
+  border-radius: var(--radius-md);
+  color: var(--color-sage-light);
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.eng-card:hover .eng-card__icon {
+  background: rgba(143, 192, 184, 0.18);
+  border-color: var(--color-sage-light);
+}
+
+.eng-card__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 1.4vw, 1.25rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.eng-card__desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 30ch;
+}
+
+/* Legacy compact item styles — kept for any other pages that reference them */
 .eng-item {
   display: flex;
   flex-direction: column;
@@ -3771,12 +3956,20 @@ p {
 /* Engineering grid */
 @media (max-width: 1024px) {
   .engineering-grid { grid-template-columns: repeat(4, 1fr); }
+  .engineering-grid--cards .eng-row--4 { grid-template-columns: repeat(2, 1fr); }
+  .engineering-grid--cards .eng-row--3 { grid-template-columns: repeat(3, 1fr); max-width: 100%; }
 }
 @media (max-width: 640px) {
   .engineering-grid { grid-template-columns: repeat(3, 1fr); }
+  .engineering-grid--cards .eng-row--4,
+  .engineering-grid--cards .eng-row--3 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+  .eng-card { min-height: 260px; }
 }
 @media (max-width: 440px) {
   .engineering-grid { grid-template-columns: repeat(2, 1fr); }
+  .engineering-grid--cards .eng-row--4,
+  .engineering-grid--cards .eng-row--3 { grid-template-columns: 1fr; max-width: 100%; }
+  .eng-card { min-height: 240px; }
 }
 
 /* Planning grid */
@@ -4169,4 +4362,194 @@ p {
     height: 50px;
   }
   .whatsapp-float__tooltip { display: none; }
+}
+/* ============================================================
+   PROJECT MANAGEMENT PROCESS — NEW CARD DESIGN
+   ============================================================ */
+
+.process-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 55px auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.process-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.process-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+}
+
+.process-card__image {
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  background: #e8efed;
+}
+
+.process-card__image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.process-card:hover .process-card__image img {
+  transform: scale(1.05);
+}
+
+.process-card__content {
+  padding: 24px 24px 28px;
+  text-align: left;
+  flex: 1;
+}
+
+.process-card__label {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-teal);
+}
+
+.process-card__content h3 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.process-card__content p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+
+/* 5-card layout: all 5 in one row */
+.process-cards--5col {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  max-width: 1900px;
+width: calc(120% + 10vw);
+margin-left: calc(-10vw);
+margin-right: calc(-5vw);
+  padding: 0 0vw;
+  gap: 24px;
+}
+
+.process-cards--5col .process-card__image {
+  height: 140px;
+}
+
+.process-cards--5col .process-card__content {
+  padding: 14px 18px 18px;
+}
+
+.process-cards--5col .process-card__content h3 {
+  font-size: 1.05rem;
+}
+
+.process-cards--5col .process-card__content p {
+  font-size: 0.82rem;
+}
+
+/* 6-card layout: 4 columns row 1, 2 cards centred row 2 */
+.process-cards--6col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Cards 1–4: one column each — fills row 1 automatically */
+
+/* Cards 5–6: centre them in columns 2 and 3 of the 4-column grid */
+.process-cards--6col .process-card:nth-child(5) {
+  grid-column: 2 / 3;
+}
+
+.process-cards--6col .process-card:nth-child(6) {
+  grid-column: 3 / 4;
+}
+.process-cards--6col .process-card__image {
+  height: 140px;
+}
+
+.process-cards--6col .process-card__content {
+  padding: 14px 18px 18px;
+}
+
+.process-cards--6col .process-card__content h3 {
+  font-size: 1.05rem;
+}
+
+.process-cards--6col .process-card__content p {
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1000px) {
+  .process-cards,
+  .process-cards--6col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .process-cards--5col {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    gap: 24px;
+  }
+
+  .process-cards--5col .process-card__image {
+    height: 190px;
+  }
+
+  /* reset column positioning for cards 5–6 on tablet */
+  .process-cards--6col .process-card:nth-child(5),
+  .process-cards--6col .process-card:nth-child(6) {
+    grid-column: auto;
+  }
+
+  .process-cards--6col .process-card__image {
+    height: 190px;
+  }
+}
+
+@media (max-width: 600px) {
+  .process-cards,
+  .process-cards--5col,
+  .process-cards--6col {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 10px;
+    gap: 20px;
+  }
+
+  .process-card__image,
+  .process-cards--5col .process-card__image {
+    height: 210px;
+  }
+
+  .process-card__content {
+    padding: 22px;
+  }
 }
