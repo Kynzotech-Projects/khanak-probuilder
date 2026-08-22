@@ -388,38 +388,141 @@ function initCounters() {
  ============================================================ */
 
 /**
- * Build the inner HTML for a single project card.
- * Used on both Home (featured grid) and Projects page grid.
+ * Build slides HTML for the card slideshow.
+ * Supports both image and video media items.
  */
-function buildProjectCard(project) {
+function buildCardSlides(project) {
+ const media = project.media && project.media.length
+ ? project.media
+ : [{ type: 'image', src: project.image || '', alt: project.title }];
+
+ return media.map((item, i) => {
+ if (item.type === 'video') {
+ const poster = item.poster
+ ? `poster="${item.poster}"`
+ : '';
  return `
- <article
- class="project-card"
- data-category="${project.category}"
- data-placeholder="true"
- role="button"
- tabindex="0"
- aria-label="View details for ${project.title}"
- onclick="openProjectModal('${project.id}')"
- onkeydown="if(event.key==='Enter'||event.key===' ')openProjectModal('${project.id}')"
+ <div class="card-slide${i === 0 ? ' card-slide--active' : ''}" data-slide-index="${i}" aria-hidden="${i !== 0}">
+ <div class="card-slide__video-wrap">
+ <video
+ class="card-slide__video"
+ src="${item.src}"
+ ${poster}
+ preload="none"
+ playsinline
+ controls
+ aria-label="${project.title} — project video"
+ ></video>
+ <button
+ class="card-slide__play-btn"
+ aria-label="Play video for ${project.title}"
+ type="button"
  >
- <div class="project-card__thumb">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+ <polygon points="5 3 19 12 5 21 5 3"/>
+ </svg>
+ </button>
+ </div>
+ </div>`;
+ }
+ return `
+ <div class="card-slide${i === 0 ? ' card-slide--active' : ''}" data-slide-index="${i}" aria-hidden="${i !== 0}">
  <img
- src="${project.image}"
- alt="${project.title} ${project.category} project by Khanak ProBuild LLP, Ahmedabad"
- loading="lazy"
+ src="${item.src}"
+ alt="${item.alt || project.title + ' — image ' + (i + 1)}"
+ loading="${i === 0 ? 'eager' : 'lazy'}"
  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
  >
- <!-- Fallback placeholder shown when image not yet available -->
  <div class="img-placeholder" style="display:none;" aria-hidden="true">
  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
  <rect x="8" y="28" width="12" height="28"/><rect x="26" y="16" width="12" height="40"/>
  <rect x="44" y="22" width="12" height="34"/><line x1="4" y1="56" x2="60" y2="56"/>
  </svg>
  </div>
+ </div>`;
+ }).join('');
+}
+
+/**
+ * Build dot indicators for the card slideshow.
+ */
+function buildCardDots(count) {
+ if (count <= 1) return '';
+ const dots = Array.from({ length: count }, (_, i) =>
+ `<button
+ class="card-dot${i === 0 ? ' card-dot--active' : ''}"
+ data-dot="${i}"
+ aria-label="Go to slide ${i + 1}"
+ type="button"
+ ></button>`
+ ).join('');
+ return `<div class="card-slideshow__dots" aria-label="Slide navigation">${dots}</div>`;
+}
+
+/**
+ * Build the inner HTML for a single project card.
+ * Used on both Home (featured grid) and Projects page grid.
+ */
+function buildProjectCard(project) {
+ const media = project.media && project.media.length
+ ? project.media
+ : [{ type: 'image', src: project.image || '', alt: project.title }];
+ const slideCount = media.length;
+ const showNav = slideCount > 1;
+
+ return `
+ <article
+ class="project-card"
+ data-category="${project.category}"
+ data-project-id="${project.id}"
+ >
+ <div class="project-card__thumb">
+ <!-- Slideshow wrapper -->
+ <div
+ class="card-slideshow"
+ data-slideshow
+ data-count="${slideCount}"
+ aria-label="${project.title} project images"
+ >
+ <div class="card-slideshow__track">
+ ${buildCardSlides(project)}
+ </div>
+
+ ${showNav ? `
+ <button
+ class="card-slideshow__nav card-slideshow__nav--prev"
+ aria-label="Previous image for ${project.title}"
+ type="button"
+ >
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+ <polyline points="15 18 9 12 15 6"/>
+ </svg>
+ </button>
+ <button
+ class="card-slideshow__nav card-slideshow__nav--next"
+ aria-label="Next image for ${project.title}"
+ type="button"
+ >
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+ <polyline points="9 18 15 12 9 6"/>
+ </svg>
+ </button>
+ ` : ''}
+
+ ${buildCardDots(slideCount)}
+ </div>
+
  <span class="project-card__category">${project.category}</span>
  </div>
- <div class="project-card__body">
+
+ <div
+ class="project-card__body"
+ role="button"
+ tabindex="0"
+ aria-label="View details for ${project.title}"
+ onclick="openProjectModal('${project.id}')"
+ onkeydown="if(event.key==='Enter'||event.key===' ')openProjectModal('${project.id}')"
+ >
  <h3 class="project-card__title">${project.title}</h3>
  <p class="project-card__desc">${project.description}</p>
  <div class="project-card__meta">
@@ -453,7 +556,8 @@ function renderFeaturedProjects() {
  if (!featured.length) featured = projects.slice(0, 3);
 
  container.innerHTML = featured.map(buildProjectCard).join('');
- initScrollReveal(); // re-run so newly added cards get observed
+ initCardSlideshows(container);
+ initScrollReveal();
 }
 
 /**
@@ -474,7 +578,148 @@ function renderProjectsGrid(filterCategory = 'All') {
  }
 
  container.innerHTML = filtered.map(buildProjectCard).join('');
+ initCardSlideshows(container);
  initScrollReveal();
+}
+
+/* ============================================================
+ 8b. CARD SLIDESHOW LOGIC
+ ============================================================ */
+
+/**
+ * Initialise all card slideshows inside a given container.
+ * Safe to call multiple times — skips already-initialised slideshows.
+ */
+function initCardSlideshows(container) {
+ const slideshows = $$('[data-slideshow]', container || document);
+
+ slideshows.forEach(ss => {
+ if (ss.dataset.slideshowReady) return; // already initialised
+ ss.dataset.slideshowReady = 'true';
+
+ const slides = $$('.card-slide', ss);
+ const dots   = $$('.card-dot', ss);
+ const prev   = ss.querySelector('.card-slideshow__nav--prev');
+ const next   = ss.querySelector('.card-slideshow__nav--next');
+ const total  = slides.length;
+ if (total <= 1) return; // nothing to slide
+
+ let current = 0;
+ let autoTimer = null;
+ const AUTO_INTERVAL = 4000;
+
+ function pauseVideo(slide) {
+ const vid = slide.querySelector('.card-slide__video');
+ if (vid && !vid.paused) vid.pause();
+ }
+
+ function goTo(index) {
+ const prev_slide = slides[current];
+ pauseVideo(prev_slide);
+ prev_slide.classList.remove('card-slide--active');
+ prev_slide.setAttribute('aria-hidden', 'true');
+ if (dots[current]) dots[current].classList.remove('card-dot--active');
+
+ current = (index + total) % total;
+
+ slides[current].classList.add('card-slide--active');
+ slides[current].setAttribute('aria-hidden', 'false');
+ if (dots[current]) dots[current].classList.add('card-dot--active');
+ }
+
+ function startAuto() {
+ clearInterval(autoTimer);
+ // Don't auto-advance if current slide is a playing video
+ autoTimer = setInterval(() => {
+ const currentVid = slides[current].querySelector('.card-slide__video');
+ if (currentVid && !currentVid.paused) return; // wait for video to finish/pause
+ goTo(current + 1);
+ }, AUTO_INTERVAL);
+ }
+
+ function stopAuto() { clearInterval(autoTimer); }
+
+ // Nav buttons — stop propagation to prevent triggering card modal
+ if (prev) {
+ prev.addEventListener('click', e => {
+ e.stopPropagation();
+ goTo(current - 1);
+ startAuto();
+ });
+ }
+ if (next) {
+ next.addEventListener('click', e => {
+ e.stopPropagation();
+ goTo(current + 1);
+ startAuto();
+ });
+ }
+
+ // Dot navigation
+ dots.forEach((dot, i) => {
+ dot.addEventListener('click', e => {
+ e.stopPropagation();
+ goTo(i);
+ startAuto();
+ });
+ });
+
+ // Play-button overlay for video slides
+ const playBtns = $$('.card-slide__play-btn', ss);
+ playBtns.forEach(btn => {
+ btn.addEventListener('click', e => {
+ e.stopPropagation();
+ const slide = btn.closest('.card-slide');
+ const vid   = slide.querySelector('.card-slide__video');
+ if (!vid) return;
+ if (vid.paused) {
+ vid.play();
+ btn.style.display = 'none';
+ stopAuto(); // pause auto-advance while video plays
+ } else {
+ vid.pause();
+ btn.style.display = '';
+ startAuto();
+ }
+ });
+ });
+
+ // Show play button again after video ends/pauses
+ $$('.card-slide__video', ss).forEach(vid => {
+ vid.addEventListener('pause', () => {
+ const btn = vid.closest('.card-slide').querySelector('.card-slide__play-btn');
+ if (btn) btn.style.display = '';
+ startAuto();
+ });
+ vid.addEventListener('ended', () => {
+ const btn = vid.closest('.card-slide').querySelector('.card-slide__play-btn');
+ if (btn) btn.style.display = '';
+ startAuto();
+ goTo(current + 1); // auto-advance to next slide after video ends
+ });
+ // Stop native controls from triggering card modal
+ vid.addEventListener('click', e => e.stopPropagation());
+ });
+
+ // Touch swipe support
+ let touchStartX = 0;
+ ss.addEventListener('touchstart', e => {
+ touchStartX = e.changedTouches[0].screenX;
+ }, { passive: true });
+ ss.addEventListener('touchend', e => {
+ const dx = e.changedTouches[0].screenX - touchStartX;
+ if (Math.abs(dx) > 40) {
+ goTo(dx < 0 ? current + 1 : current - 1);
+ startAuto();
+ }
+ }, { passive: true });
+
+ // Pause auto when user hovers over the card
+ ss.closest('.project-card')?.addEventListener('mouseenter', stopAuto);
+ ss.closest('.project-card')?.addEventListener('mouseleave', startAuto);
+
+ startAuto();
+ });
 }
 
 /* ============================================================
@@ -494,50 +739,174 @@ function initProjectsFilter() {
 }
 
 /* ============================================================
- 10. PROJECT DETAIL MODAL
+ 10. PROJECT DETAIL MODAL — SLIDESHOW
  ============================================================ */
+
+/** Track modal slideshow state so we can clean up on close */
+let _modalState = null;
+
+/**
+ * Build one slide element for the modal slideshow.
+ */
+function buildModalSlide(item, index, project) {
+ const slide = document.createElement('div');
+ slide.className = 'modal__slide' + (index === 0 ? ' modal__slide--active' : '');
+ slide.setAttribute('aria-hidden', index !== 0);
+
+ if (item.type === 'video') {
+ const poster = item.poster ? ` poster="${item.poster}"` : '';
+ slide.innerHTML = `
+ <div class="modal__slide-video-wrap">
+ <video
+ class="modal__slide-video"
+ src="${item.src}"${poster}
+ preload="none"
+ playsinline
+ controls
+ aria-label="${project.title} — project video"
+ ></video>
+ <button class="modal__slide-play-btn" aria-label="Play video" type="button">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+ <polygon points="5 3 19 12 5 21 5 3"/>
+ </svg>
+ </button>
+ </div>`;
+
+ // Wire play button
+ const playBtn = slide.querySelector('.modal__slide-play-btn');
+ const vid     = slide.querySelector('.modal__slide-video');
+ playBtn.addEventListener('click', e => {
+ e.stopPropagation();
+ if (vid.paused) { vid.play(); playBtn.style.display = 'none'; }
+ else            { vid.pause(); playBtn.style.display = ''; }
+ });
+ vid.addEventListener('pause',  () => { playBtn.style.display = ''; });
+ vid.addEventListener('ended',  () => { playBtn.style.display = ''; });
+ vid.addEventListener('click',  e => e.stopPropagation());
+
+ } else {
+ const img = document.createElement('img');
+ img.className  = 'modal__slide-img';
+ img.src        = item.src;
+ img.alt        = item.alt || `${project.title} — image ${index + 1}`;
+ img.loading    = index === 0 ? 'eager' : 'lazy';
+
+ // Fallback placeholder on error
+ img.onerror = () => {
+ img.style.display = 'none';
+ const ph = document.createElement('div');
+ ph.className = 'modal__slide-placeholder';
+ ph.setAttribute('aria-hidden', 'true');
+ ph.innerHTML = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+ <rect x="8" y="28" width="12" height="28"/>
+ <rect x="26" y="16" width="12" height="40"/>
+ <rect x="44" y="22" width="12" height="34"/>
+ <line x1="4" y1="56" x2="60" y2="56"/>
+ </svg>`;
+ slide.appendChild(ph);
+ };
+ slide.appendChild(img);
+ }
+
+ return slide;
+}
+
 function openProjectModal(projectId) {
  if (typeof projects === 'undefined') return;
  const project = projects.find(p => p.id === projectId);
  if (!project) return;
 
- const overlay = $('#project-modal');
+ const overlay    = $('#project-modal');
  if (!overlay) return;
 
- // Populate modal
- const imgEl = overlay.querySelector('.modal__image');
- const imgPlaceholder = overlay.querySelector('.modal__image-placeholder');
+ const slideshowEl = $('#modal-slideshow');
+ const navEl       = $('#modal-slide-nav');
+ const counterEl   = $('#modal-counter');
+ const prevBtn     = $('#modal-prev');
+ const nextBtn     = $('#modal-next');
 
- if (imgEl) {
- imgEl.src = project.image;
- imgEl.alt = `${project.title} Khanak ProBuild LLP`;
- imgEl.style.display = 'block';
- if (imgPlaceholder) imgPlaceholder.style.display = 'none';
+ /* ── Build slides ──────────────────────────── */
+ const media = project.media && project.media.length
+ ? project.media
+ : [{ type: 'image', src: project.image || '', alt: project.title }];
 
- imgEl.onerror = () => {
- imgEl.style.display = 'none';
- if (imgPlaceholder) imgPlaceholder.style.display = 'flex';
- };
+ // Clear previous content
+ slideshowEl.innerHTML = '';
+
+ const slideEls = media.map((item, i) => {
+ const el = buildModalSlide(item, i, project);
+ slideshowEl.appendChild(el);
+ return el;
+ });
+
+ const total   = slideEls.length;
+ let   current = 0;
+
+ /* ── Counter helper ───────────────────────── */
+ function updateCounter() {
+ if (counterEl) counterEl.textContent = `${current + 1} / ${total}`;
  }
 
- const catEl = overlay.querySelector('.modal__category');
- const titleEl = overlay.querySelector('.modal__title');
+ /* ── Pause any playing video in a slide ─────── */
+ function pauseSlideVideo(slide) {
+ const vid = slide.querySelector('.modal__slide-video');
+ if (vid && !vid.paused) vid.pause();
+ }
+
+ /* ── Navigate to a slide ─────────────────── */
+ function goTo(index) {
+ pauseSlideVideo(slideEls[current]);
+ slideEls[current].classList.remove('modal__slide--active');
+ slideEls[current].setAttribute('aria-hidden', 'true');
+
+ current = (index + total) % total;
+
+ slideEls[current].classList.add('modal__slide--active');
+ slideEls[current].setAttribute('aria-hidden', 'false');
+ updateCounter();
+ }
+
+ /* ── Nav buttons ─────────────────────────── */
+ if (total > 1) {
+ navEl.style.display = '';
+ prevBtn.onclick = e => { e.stopPropagation(); goTo(current - 1); };
+ nextBtn.onclick = e => { e.stopPropagation(); goTo(current + 1); };
+ } else {
+ navEl.style.display = 'none';
+ }
+
+ updateCounter();
+
+ /* ── Keyboard ← / → ─────────────────────── */
+ function onKeyDown(e) {
+ if (!overlay.classList.contains('open')) return;
+ if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); }
+ if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+ }
+
+ /* ── Store state for cleanup on close ─────── */
+ _modalState = { overlay, slideEls, pauseSlideVideo, onKeyDown, current: () => current };
+
+ document.addEventListener('keydown', onKeyDown);
+
+ /* ── Populate text fields ─────────────────── */
+ const catEl  = overlay.querySelector('.modal__category');
+ const titleEl= overlay.querySelector('.modal__title');
  const descEl = overlay.querySelector('.modal__desc');
  const locVal = overlay.querySelector('[data-modal-location]');
- const yearVal = overlay.querySelector('[data-modal-year]');
+ const yearVal= overlay.querySelector('[data-modal-year]');
  const catVal = overlay.querySelector('[data-modal-category]');
 
- if (catEl) catEl.textContent = project.category;
- if (titleEl) titleEl.textContent = project.title;
- if (descEl) descEl.textContent = project.description;
- if (locVal) locVal.textContent = project.location;
- if (yearVal) yearVal.textContent = project.year;
- if (catVal) catVal.textContent = project.category;
+ if (catEl)   catEl.textContent  = project.category;
+ if (titleEl) titleEl.textContent= project.title;
+ if (descEl)  descEl.textContent = project.description;
+ if (locVal)  locVal.textContent = project.location;
+ if (yearVal) yearVal.textContent= project.year;
+ if (catVal)  catVal.textContent = project.category;
 
  overlay.classList.add('open');
  document.body.style.overflow = 'hidden';
 
- // Focus the close button for accessibility
  const closeBtn = overlay.querySelector('.modal__close');
  if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
 }
@@ -545,6 +914,15 @@ function openProjectModal(projectId) {
 function closeProjectModal() {
  const overlay = $('#project-modal');
  if (!overlay) return;
+
+ // Pause any playing video and remove keyboard listener
+ if (_modalState) {
+ const { slideEls, pauseSlideVideo, onKeyDown } = _modalState;
+ slideEls.forEach(pauseSlideVideo);
+ document.removeEventListener('keydown', onKeyDown);
+ _modalState = null;
+ }
+
  overlay.classList.remove('open');
  document.body.style.overflow = '';
 }
@@ -553,7 +931,7 @@ function initModal() {
  const overlay = $('#project-modal');
  if (!overlay) return;
 
- // Close on overlay click
+ // Close on backdrop click
  overlay.addEventListener('click', e => {
  if (e.target === overlay) closeProjectModal();
  });
@@ -562,7 +940,7 @@ function initModal() {
  const closeBtn = overlay.querySelector('.modal__close');
  if (closeBtn) closeBtn.addEventListener('click', closeProjectModal);
 
- // Escape key
+ // Escape key (base handler — openProjectModal also adds arrow-key handler)
  document.addEventListener('keydown', e => {
  if (e.key === 'Escape' && overlay.classList.contains('open')) closeProjectModal();
  });
