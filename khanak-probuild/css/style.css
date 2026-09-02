@@ -2670,7 +2670,8 @@ p {
 
 [data-reveal].revealed {
   opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
+  transform: none;
+  will-change: auto;
 }
 
 /* Stagger delays */
@@ -4574,6 +4575,24 @@ p {
   display: flex;
 }
 
+/* Error message — mirrors .form-success but in red */
+.contact-hero__form-panel .form-error {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  margin-top: 1.25rem;
+}
+
+.contact-hero__form-panel .form-error.visible {
+  display: flex;
+}
+
 /* Map strip below hero */
 .contact-map-full {
   width: 100%;
@@ -4623,6 +4642,67 @@ p {
   }
 
   .contact-map-full { height: 240px; }
+}
+
+/* ============================================================
+   CONTACT FORM — FIELD-LEVEL ERRORS & CHARACTER COUNTER
+   ============================================================ */
+
+/* Inline field error message (inserted by JS after each invalid field) */
+.field-error {
+  display: none;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #b91c1c;
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+.field-error.visible {
+  display: block;
+}
+
+/* Red border state — applied inline by JS, but also target via class for
+   future use and consistency */
+.contact-hero__form-panel .form-input[aria-invalid="true"],
+.contact-hero__form-panel .form-select[aria-invalid="true"],
+.contact-hero__form-panel .form-textarea[aria-invalid="true"] {
+  border-color: #e05555;
+  box-shadow: 0 0 0 3px rgba(224, 85, 85, 0.12);
+}
+
+/* Remove red focus ring override when field is invalid and focused */
+.contact-hero__form-panel .form-input[aria-invalid="true"]:focus,
+.contact-hero__form-panel .form-select[aria-invalid="true"]:focus,
+.contact-hero__form-panel .form-textarea[aria-invalid="true"]:focus {
+  border-color: #e05555;
+  box-shadow: 0 0 0 3px rgba(224, 85, 85, 0.18);
+}
+
+/* Character counter below the message textarea */
+.msg-counter {
+  display: block;
+  text-align: right;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-top: 0.3rem;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+/* Approaching limit — amber warning */
+.msg-counter--warn {
+  color: #b45309;
+}
+
+/* At limit — red */
+.msg-counter--limit {
+  color: #b91c1c;
+  font-weight: 600;
 }
 
 /* ============================================================
@@ -4739,7 +4819,7 @@ p {
   width: 100%;
   height: 240px;
   overflow: hidden;
-  background: #e8efed;
+  background: #f0f0f0;
 }
 
 .process-card__image img {
@@ -4748,11 +4828,6 @@ p {
   display: block;
   object-fit: cover;
   object-position: center center;
-  /* Force high-quality downscaling for large source images */
-  image-rendering: high-quality;
-  image-rendering: -webkit-optimize-contrast;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
   transition: transform 0.5s ease;
 }
 
@@ -4789,19 +4864,31 @@ p {
   color: var(--color-text-muted);
 }
 
-/* 5-card layout: all 5 in one row */
+/* 5-card layout: 3 cards row 1, 2 cards centred row 2 */
 .process-cards--5col {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  max-width: 1900px;
-width: calc(120% + 10vw);
-margin-left: calc(-10vw);
-margin-right: calc(-5vw);
-  padding: 0 0vw;
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
   gap: 24px;
 }
 
+/* All cards span 2 of the 6 columns (gives equal widths, 3 per row) */
+.process-cards--5col .process-card {
+  grid-column: span 2;
+}
+
+/* Cards 4 & 5: start at columns 2 and 4 to centre them in the 6-col grid */
+.process-cards--5col .process-card:nth-child(4) {
+  grid-column: 2 / 4;
+}
+
+.process-cards--5col .process-card:nth-child(5) {
+  grid-column: 4 / 6;
+}
+
 .process-cards--5col .process-card__image {
-  height: 140px;
+  height: 220px;
 }
 
 .process-cards--5col .process-card__content {
@@ -4832,7 +4919,7 @@ margin-right: calc(-5vw);
   grid-column: 3 / 4;
 }
 .process-cards--6col .process-card__image {
-  height: 180px;
+  height: 200px;
 }
 
 .process-cards--6col .process-card__content {
@@ -4855,13 +4942,23 @@ margin-right: calc(-5vw);
   }
 
   .process-cards--5col {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     max-width: 100%;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding: 0;
     gap: 24px;
+  }
+
+  /* Reset span and nth-child positioning for tablet — all cards auto-flow */
+  .process-cards--5col .process-card {
+    grid-column: span 2;
+  }
+
+  .process-cards--5col .process-card:nth-child(4),
+  .process-cards--5col .process-card:nth-child(5) {
+    grid-column: span 2;
   }
 
   .process-cards--5col .process-card__image {
@@ -4890,6 +4987,13 @@ margin-right: calc(-5vw);
     margin-right: auto;
     padding: 0 10px;
     gap: 20px;
+  }
+
+  /* Reset all column-span rules for single-column mobile */
+  .process-cards--5col .process-card,
+  .process-cards--5col .process-card:nth-child(4),
+  .process-cards--5col .process-card:nth-child(5) {
+    grid-column: 1 / -1;
   }
 
   .process-card__image,

@@ -165,13 +165,13 @@ const FOOTER_HTML = `
  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
  <polyline points="22,6 12,13 2,6"/>
  </svg>
- <a href="mailto:info@khanakprobuild.com">info@khanakprobuild.com</a>
+ <a href="mailto:khanakprobuild@gmail.com">khanakprobuild@gmail.com</a>
  </div>
  <div class="footer-contact-item">
  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.28h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.4a16 16 0 0 0 7.69 7.69l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 23 18l-.08.92z"/>
  </svg>
- <a href="tel:9825652912">9825652912</a>
+ <a href="tel:+919825652912">+91 98256 52912</a>
  </div>
  <div class="footer-contact-item">
  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
@@ -221,7 +221,7 @@ function injectFooter() {
  ============================================================ */
 function injectWhatsApp() {
  // Replace with the actual WhatsApp number (country code + number, no + or spaces)
- const WHATSAPP_NUMBER = '919825652912';
+  const WHATSAPP_NUMBER = '919825652912';
  const WHATSAPP_MESSAGE = encodeURIComponent('Hello! I am interested in your construction/interior services.');
 
  const btn = document.createElement('a');
@@ -991,49 +991,287 @@ function initServiceTabs() {
  12. CONTACT FORM
  ============================================================ */
 function initContactForm() {
- const form = $('#contact-form');
- const success = $('#form-success');
- if (!form) return;
+  const form    = $('#contact-form');
+  const success = $('#form-success');
+  if (!form) return;
 
- form.addEventListener('submit', e => {
- e.preventDefault();
+  // ── Google Apps Script Web App endpoint (unchanged) ──────────────────────
+  const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAG7SwKhBRlDJB-AfusJD03oa8BpOQr7z_1Fvj4Gjicr6Hqj00t9jOsjgBrh42itIx/exec';
 
- // Basic client-side validation
- let valid = true;
- $$('[required]', form).forEach(field => {
- if (!field.value.trim()) {
- field.style.borderColor = '#e05555';
- valid = false;
- } else {
- field.style.borderColor = '';
- }
- });
+  // ── Guard against duplicate in-flight submissions ─────────────────────────
+  let isSubmitting = false;
 
- if (!valid) return;
+  // ── Resolve or create the submission-level error banner ──────────────────
+  let errorEl = $('#form-error');
+  if (!errorEl) {
+    errorEl = document.createElement('div');
+    errorEl.id = 'form-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.setAttribute('aria-live', 'polite');
+    errorEl.className = 'form-error';
+    if (success) {
+      success.parentNode.insertBefore(errorEl, success.nextSibling);
+    } else {
+      form.parentNode.appendChild(errorEl);
+    }
+  }
 
- // Simulate submission (no backend show success state)
- const submitBtn = form.querySelector('[type="submit"]');
- submitBtn.disabled = true;
- submitBtn.textContent = 'Sending…';
+  // ── Field references ──────────────────────────────────────────────────────
+  const nameInput    = document.getElementById('contact-name');
+  const emailInput   = document.getElementById('contact-email');
+  const phoneInput   = document.getElementById('contact-phone');
+  const serviceInput = document.getElementById('contact-service');
+  const messageInput = document.getElementById('contact-message');
+  const counterEl    = document.getElementById('contact-message-counter');
+  const submitBtn    = form.querySelector('[type="submit"]');
 
- setTimeout(() => {
- form.reset();
- submitBtn.disabled = false;
- submitBtn.textContent = 'Send Message';
- if (success) {
- success.classList.add('visible');
- success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
- setTimeout(() => success.classList.remove('visible'), 6000);
- }
- }, 1200);
- });
+  // ── Valid service values (must match the HTML option values exactly) ──────
+  const VALID_SERVICES = [
+    'Construction',
+    'Project Management Consultancy',
+    'Interior Design',
+    'General Enquiry'
+  ];
 
- // Real-time validation reset
- $$('[required]', form).forEach(field => {
- field.addEventListener('input', () => {
- field.style.borderColor = '';
- });
- });
+  // ── Submit-button inner HTML (reused on restore) ──────────────────────────
+  const BTN_DEFAULT_HTML = 'Send Message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // HELPERS — show / clear individual field errors
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Mark a field as invalid: red border + visible error <span>.
+   * The error element is looked up by the field's aria-describedby id.
+   */
+  function setError(field, message) {
+    field.style.borderColor = '#e05555';
+    field.setAttribute('aria-invalid', 'true');
+    const errId = field.getAttribute('aria-describedby');
+    if (!errId) return;
+    let errEl = document.getElementById(errId);
+    if (!errEl) {
+      errEl = document.createElement('span');
+      errEl.id = errId;
+      errEl.className = 'field-error';
+      errEl.setAttribute('role', 'alert');
+      // Insert immediately after the field (or after the counter for message)
+      const after = field.id === 'contact-message' ? counterEl || field : field;
+      after.insertAdjacentElement('afterend', errEl);
+    }
+    errEl.textContent = message;
+    errEl.classList.add('visible');
+  }
+
+  /** Remove the error state from a field. */
+  function clearError(field) {
+    field.style.borderColor = '';
+    field.removeAttribute('aria-invalid');
+    const errId = field.getAttribute('aria-describedby');
+    if (!errId) return;
+    const errEl = document.getElementById(errId);
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.remove('visible');
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // VALIDATORS — each returns null (valid) or an error string (invalid)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  function validateName(value) {
+    if (!value) return 'Full name is required.';
+    if (value.length < 2)  return 'Name must be at least 2 characters.';
+    if (value.length > 80) return 'Name cannot exceed 80 characters.';
+    return null;
+  }
+
+  function validateEmail(value) {
+    if (!value) return 'Email address is required.';
+    if (value.length > 254) return 'Email cannot exceed 254 characters.';
+    // Requires: local-part @ domain . tld(2+)
+    // local-part: non-whitespace, no @
+    // domain: non-whitespace, no @, contains at least one dot
+    // tld: 2+ non-whitespace, non-@ chars
+    // Rejects: akash, akash@, @gmail.com, akash@gmail,
+    //          akash gmail.com, akash@@gmail.com (double @)
+    const re = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
+    if (!re.test(value)) return 'Please enter a valid email address.';
+    return null;
+  }
+
+  function validatePhone(value) {
+    // Optional — empty is fine
+    if (!value) return null;
+    // Reject anything that contains letters, @, or .
+    if (/[a-zA-Z@.]/.test(value)) return 'Please enter a valid 10-digit Indian mobile number.';
+    // Strip allowed formatting: +91 country prefix, spaces, hyphens
+    const stripped = value
+      .replace(/^\+91[\s-]?/, '')  // remove optional +91 prefix
+      .replace(/[\s-]/g, '');      // remove spaces and hyphens
+    // After stripping, must be exactly 10 digits
+    if (!/^\d{10}$/.test(stripped)) return 'Please enter a valid 10-digit Indian mobile number.';
+    // First digit of the 10-digit number must be 6, 7, 8, or 9
+    if (!/^[6-9]/.test(stripped)) return 'Please enter a valid 10-digit Indian mobile number.';
+    return null;
+  }
+
+  function validateService(value) {
+    if (!value || !VALID_SERVICES.includes(value)) return 'Please select a service.';
+    return null;
+  }
+
+  function validateMessage(value) {
+    if (!value) return 'Message is required.';
+    if (value.length < 2)   return 'Message must be at least 2 characters.';
+    if (value.length > 250) return 'Message cannot exceed 250 characters.';
+    return null;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CHARACTER COUNTER for message textarea
+  // ══════════════════════════════════════════════════════════════════════════
+
+  function updateCounter() {
+    if (!counterEl) return;
+    const len = messageInput.value.length;
+    counterEl.textContent = len + ' / 250';
+    counterEl.classList.toggle('msg-counter--warn', len >= 230 && len < 250);
+    counterEl.classList.toggle('msg-counter--limit', len >= 250);
+  }
+
+  if (messageInput) {
+    messageInput.addEventListener('input', updateCounter);
+    updateCounter(); // initialise to "0 / 250" on page load
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // REAL-TIME (on-blur + on-input) error clearing
+  // Validate on blur so the user sees the error when they leave a field.
+  // Clear the error as soon as they start correcting it.
+  // ══════════════════════════════════════════════════════════════════════════
+
+  function attachLiveValidation(field, validatorFn) {
+    // Show error when focus leaves the field
+    field.addEventListener('blur', () => {
+      const val = field.value.trim();
+      const err = validatorFn(val);
+      if (err) setError(field, err); else clearError(field);
+    });
+    // Clear error as soon as the user starts typing again
+    field.addEventListener('input', () => {
+      if (field.getAttribute('aria-invalid') === 'true') clearError(field);
+    });
+  }
+
+  attachLiveValidation(nameInput,    validateName);
+  attachLiveValidation(emailInput,   validateEmail);
+  attachLiveValidation(phoneInput,   validatePhone);
+  attachLiveValidation(messageInput, validateMessage);
+
+  // Service select — validate on change
+  serviceInput.addEventListener('change', () => {
+    const err = validateService(serviceInput.value);
+    if (err) setError(serviceInput, err); else clearError(serviceInput);
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // SUBMIT HANDLER
+  // ══════════════════════════════════════════════════════════════════════════
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    // Prevent duplicate in-flight submissions
+    if (isSubmitting) return;
+
+    // Hide previous submission-level banners
+    if (success) success.classList.remove('visible');
+    errorEl.classList.remove('visible');
+
+    // ── Read and trim all values ────────────────────────────────────────────
+    const nameValue    = nameInput.value.trim();
+    const emailValue   = emailInput.value.trim();
+    const phoneValue   = phoneInput.value.trim();
+    const serviceValue = serviceInput.value;
+    const messageValue = messageInput.value.trim();
+
+    // ── Run all validators ──────────────────────────────────────────────────
+    const errors = [
+      { field: nameInput,    error: validateName(nameValue)       },
+      { field: emailInput,   error: validateEmail(emailValue)     },
+      { field: phoneInput,   error: validatePhone(phoneValue)     },
+      { field: serviceInput, error: validateService(serviceValue) },
+      { field: messageInput, error: validateMessage(messageValue) }
+    ];
+
+    let firstInvalid = null;
+    errors.forEach(({ field, error }) => {
+      if (error) {
+        setError(field, error);
+        if (!firstInvalid) firstInvalid = field;
+      } else {
+        clearError(field);
+      }
+    });
+
+    // If any field failed validation, stop here — do NOT call GAS
+    if (firstInvalid) {
+      firstInvalid.focus();
+      return;
+    }
+
+    // ── Lock the submit button ──────────────────────────────────────────────
+    isSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending&hellip;';
+
+    // ── POST to Google Apps Script (unchanged) ──────────────────────────────
+    fetch(GOOGLE_APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' }, // avoids CORS preflight for GAS
+      body: JSON.stringify({
+        name:    nameValue,
+        email:   emailValue,
+        phone:   phoneValue,
+        service: serviceValue,
+        message: messageValue
+      })
+    })
+    .then(response => {
+      // Catch genuine HTTP errors (non-2xx)
+      if (!response.ok) throw new Error('Server responded with ' + response.status);
+      return response.json();
+    })
+    .then(result => {
+      // GAS can return HTTP 200 with { success: false } — check the payload
+      if (result.success !== true) {
+        throw new Error(result.message || 'Submission failed');
+      }
+      // ── Success ────────────────────────────────────────────────────────────
+      form.reset();
+      updateCounter(); // reset counter to "0 / 250"
+      submitBtn.innerHTML = BTN_DEFAULT_HTML;
+      submitBtn.disabled  = false;
+      isSubmitting = false;
+      if (success) {
+        success.classList.add('visible');
+        success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => success.classList.remove('visible'), 6000);
+      }
+    })
+    .catch(() => {
+      // ── Failure — do NOT clear form, show error ────────────────────────────
+      submitBtn.innerHTML = BTN_DEFAULT_HTML;
+      submitBtn.disabled  = false;
+      isSubmitting = false;
+      errorEl.textContent = 'Something went wrong. Please try again or email us directly at khanakprobuild@gmail.com';
+      errorEl.classList.add('visible');
+      errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => errorEl.classList.remove('visible'), 8000);
+    });
+  });
 }
 
 /* ============================================================
