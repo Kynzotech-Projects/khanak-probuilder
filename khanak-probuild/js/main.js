@@ -50,7 +50,7 @@ const HEADER_HTML = `
  </a>
  <div class="nav-dropdown" role="menu">
  <a href="construction.html" class="nav-dropdown-link" role="menuitem">Construction</a>
- <a href="interior.html" class="nav-dropdown-link" role="menuitem">Interior Design</a>
+ <a href="interior.html" class="nav-dropdown-link" role="menuitem">Interior Fitout</a>
  <a href="project-management.html" class="nav-dropdown-link" role="menuitem">Project Management</a>
  </div>
  </div>
@@ -80,7 +80,7 @@ const HEADER_HTML = `
  <a href="services.html" class="nav-link" data-page="services.html">Services</a>
  <div class="nav-mobile-sub">
  <a href="construction.html" class="nav-dropdown-link">Construction</a>
- <a href="interior.html" class="nav-dropdown-link">Interior Design</a>
+ <a href="interior.html" class="nav-dropdown-link">Interior Fitout</a>
  <a href="project-management.html" class="nav-dropdown-link">Project Management</a>
  </div>
 
@@ -153,7 +153,7 @@ const FOOTER_HTML = `
  <ul class="footer-links">
  <li><a href="services.html#construction" class="footer-link">Construction</a></li>
  <li><a href="services.html#project-management" class="footer-link">Project Management</a></li>
- <li><a href="services.html#interior" class="footer-link">Interior Design</a></li>
+ <li><a href="services.html#interior" class="footer-link">Interior Fitout</a></li>
  </ul>
  </div>
 
@@ -408,20 +408,14 @@ function buildCardSlides(project) {
  class="card-slide__video"
  src="${item.src}"
  ${poster}
- preload="none"
+ preload="metadata"
  playsinline
+ autoplay
+ muted
+ loop
  controls
  aria-label="${project.title} — project video"
  ></video>
- <button
- class="card-slide__play-btn"
- aria-label="Play video for ${project.title}"
- type="button"
- >
- <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
- <polygon points="5 3 19 12 5 21 5 3"/>
- </svg>
- </button>
  </div>
  </div>`;
  }
@@ -664,38 +658,14 @@ function initCardSlideshows(container) {
  });
  });
 
- // Play-button overlay for video slides
- const playBtns = $$('.card-slide__play-btn', ss);
- playBtns.forEach(btn => {
- btn.addEventListener('click', e => {
- e.stopPropagation();
- const slide = btn.closest('.card-slide');
- const vid   = slide.querySelector('.card-slide__video');
- if (!vid) return;
- if (vid.paused) {
- vid.play();
- btn.style.display = 'none';
- stopAuto(); // pause auto-advance while video plays
- } else {
- vid.pause();
- btn.style.display = '';
- startAuto();
- }
- });
- });
+ // Play-button overlay removed — native video controls handle playback
 
- // Show play button again after video ends/pauses
+ // Show play button again after video ends/pauses (pause auto-advance)
  $$('.card-slide__video', ss).forEach(vid => {
- vid.addEventListener('pause', () => {
- const btn = vid.closest('.card-slide').querySelector('.card-slide__play-btn');
- if (btn) btn.style.display = '';
- startAuto();
- });
+ vid.addEventListener('pause', () => { startAuto(); });
  vid.addEventListener('ended', () => {
- const btn = vid.closest('.card-slide').querySelector('.card-slide__play-btn');
- if (btn) btn.style.display = '';
  startAuto();
- goTo(current + 1); // auto-advance to next slide after video ends
+ goTo(current + 1);
  });
  // Stop native controls from triggering card modal
  vid.addEventListener('click', e => e.stopPropagation());
@@ -1029,7 +999,7 @@ function initContactForm() {
   const VALID_SERVICES = [
     'Construction',
     'Project Management Consultancy',
-    'Interior Design',
+    'Interior Fitout',
     'General Enquiry'
   ];
 
