@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block non-public / utility files
+Disallow: /js/
+Disallow: /css/
+Disallow: /images/project images/
+
+Sitemap: https://www.khanakprobuild.com/sitemap.xml
